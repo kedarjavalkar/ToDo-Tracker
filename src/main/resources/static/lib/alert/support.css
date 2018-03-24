@@ -1,0 +1,10 @@
+#divAlert {
+	left: 0;
+	margin: auto;
+	position: fixed;
+	right: 0;
+	text-align: center;
+	/* top: 25px; */
+	width: 30%;
+	z-index: 99999;
+}

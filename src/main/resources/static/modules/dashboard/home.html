@@ -1,0 +1,133 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Tasks
+            	<button class="btn btn-primary" ng-click="mainCtrl.taskModalOpen()"> <i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+            </h1>
+            <hr>
+        </div>
+    </div>
+    
+    <div class="row">
+    	<div class="container-fluid">
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" class="active"><a href="#pending" aria-controls="pending" role="tab" data-toggle="tab"> Pending</a></li>
+				<li role="presentation"><a href="#completed" aria-controls="completed" role="tab" data-toggle="tab"> Completed</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div role="tabpanel" class="container-fluid tab-pane active" id="pending">
+					<br>
+					<table class="table table-condensed" id="pending-task-dataTables">
+						<thead>
+							<tr>
+								<th style="width: 60%">Task</th>
+								<th style="width: 10%">Priority</th>
+								<th style="width: 10%">Due Date</th>
+								<th style="width: 15%">Created Date</th>
+								<th style="width: 5%">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="task in mainCtrl.pendingTasks">
+								<td style="width: 60%">
+									<span class="label label-warning pull-right" ng-if="task.dateDiff==0">This task is due today !</span>
+									<span class="label label-warning pull-right" ng-if="task.dateDiff==1">This task is due tomorrow !</span>
+									<span class="label label-info pull-right" ng-if="task.dateDiff>1">{{task.dateDiff}} days remaining</span>
+									<span class="label label-danger pull-right" ng-if="task.dateDiff<0">This task is past due date !</span>
+									<br><pre style="background-color: white; border: none; white-space: pre-wrap;">{{task.note}}</pre>
+								</td>
+								<td style="width: 10%">{{task.priority}}</td>
+								<td style="width: 10%">{{task.dueDate | date:'yyyy-MM-dd'}}</td>
+								<td style="width: 15%">{{task.createdDate | date:'yyyy-MM-dd hh:mm.ss a'}}</td>
+								<td style="width: 5%">
+									<button class="btn btn-link" ng-click="mainCtrl.markComplete(task.id);">
+										<i class="fa fa-check-square" aria-hidden="true"></i> Complete
+									</button>
+									<button class="btn btn-link" ng-click="mainCtrl.deleteTask(task.id);">
+										<i class="fa fa-trash" aria-hidden="true"></i> Delete
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div role="tabpanel" class="container-fluid tab-pane" id="completed">
+					<br>
+					<table class="table table-condensed" id="completed-task-dataTables">
+						<thead>
+							<tr>
+								<th style="width: 70%">Task</th>
+								<th style="width: 10%">Due Date</th>
+								<th style="width: 15%">Completed Date</th>
+								<th style="width: 5%">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="task in mainCtrl.completedTasks">
+								<td style="width: 70%">
+									<span class="label label-warning pull-right" ng-if="task.dateDiff==0">Completed on due date !</span>
+									<span class="label label-info pull-right" ng-if="task.dateDiff>0">Completed {{task.dateDiff}} day(s) prior to due date</span>
+									<span class="label label-danger pull-right" ng-if="task.dateDiff<0">Late by {{task.dateDiff | positive}} days !</span>
+									<br><pre style="background-color: white; border: none; white-space: pre-wrap;">{{task.note}}</pre>
+								</td>
+								<td style="width: 10%">{{task.dueDate | date:'yyyy-MM-dd'}}</td>
+								<td style="width: 15%">{{task.completedDate | date:'yyyy-MM-dd hh:mm.ss a'}}</td>
+								<td style="width: 5%">
+									<button class="btn btn-link" ng-click="mainCtrl.deleteTask(task.id);">
+										<i class="fa fa-trash" aria-hidden="true"></i> Delete
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+    </div>
+    
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="acceptTaskModalLabel" id="acceptTaskModal">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Add a new task</h4>
+				</div>
+				<div class="modal-body">
+				<form role="form" name="newTaskForm" ng-submit="mainCtrl.saveTask()">
+					<div class="row container-fluid">
+						<div class="col-lg-9">
+							<textarea rows="14" ng-model="mainCtrl.newTask.note" class="form-control" placeholder="Enter note here..." maxlength="4999" required></textarea>
+						</div>
+						<div class="col-lg-3">
+							<div class="row">
+								<label>Priority: *</label>
+								<select class="form-control" ng-model="mainCtrl.newTask.priority" required>
+									<option value="Low">Low</option>
+									<option value="Moderate">Moderate</option>
+									<option value="Urgent">Urgent</option>
+								</select>
+							</div>
+							<br>
+							<div class="row">
+								<label>Due Date: *</label>
+		            			<input moment-picker class="form-control" placeholder="Select a date..." 
+							       ng-model="mainCtrl.newTask.dueDate" locale="en" format="YYYY-MM-DD" today="true"
+							       max-view="day" start-view="day" set-on-select="true" required />
+							</div>
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-lg-offset-4 col-lg-4">
+							<div class="form-group">
+								<button type="submit" class="btn btn-success btn-block">Save</button>
+							</div>
+						</div>
+					</div>
+				</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

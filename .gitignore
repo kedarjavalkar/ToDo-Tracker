@@ -1,0 +1,9 @@
+.settings
+.classpath
+.project
+target
+database.mv.db
+dependency-reduced-pom.xml
+.DS_Store
+/database.trace.db
+/webservices.log
